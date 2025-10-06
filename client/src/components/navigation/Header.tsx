@@ -35,9 +35,28 @@ export default function Header() {
   const router = useRouter();
 
   const onLogout = async () => {
-    await dispatch(logout());
-    await logoutUser();
-    router.refresh();
+    try {
+      // 1️⃣ Redux ya state se logout
+      await dispatch(logout());
+      await logoutUser();
+
+      // 2️⃣ Backend API ko call karke token clear karna
+      const res = await fetch("/api/clear-token", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+
+      const data = await res.json();
+      // console.log(data.message); // "Token cleared"
+
+      // 3️⃣ Page refresh (ya UI update)
+      router.refresh();
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
   };
 
   return (
