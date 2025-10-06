@@ -34,12 +34,12 @@ export default function RootLayout({
         suppressHydrationWarning
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ThemeProvider
+        {/* <ThemeProvider
           attribute='class'
           defaultTheme='system'
           enableSystem
           disableTransitionOnChange
-        >
+        > */}
           <Providers>
             <div className='min-h-dvh bg-gradient-to-b from-blue-50 to-white text-foreground'>
               <Header />
@@ -48,7 +48,7 @@ export default function RootLayout({
             </div>
             <Toaster />
           </Providers>
-        </ThemeProvider>
+        {/* </ThemeProvider> */}
       </body>
     </html>
   );
