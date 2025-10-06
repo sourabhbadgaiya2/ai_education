@@ -11,6 +11,7 @@ import Flashcard from "../models/Flashcard.js";
 
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import config from "../config/env.config.js";
+
 const genAI = new GoogleGenerativeAI(config.GEMINI_API_KEY);
 
 export const summarizeNote = async (req, res) => {
@@ -94,58 +95,6 @@ Answer:
   }
 };
 
-// export const generateFlashcardsMCQs = async (req, res) => {
-//   try {
-//     const { noteId } = req.body;
-//     const userId = req.user.id;
-
-//     const note = await Notes.findById(noteId);
-//     if (!note) return res.status(404).json({ error: "Note not found" });
-
-//     const prompt = `
-// Create 10 flashcards (Q&A) and 10 MCQs with options and correct answers based on the following notes content:
-// ${note.summary}
-
-// Return the response in JSON format with two keys: flashcards and mcqs.
-//     `;
-
-//     const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
-//     const result = await model.generateContent(prompt);
-//     const response = await result.response;
-//     const aiResponseText = await response.text();
-
-//     let parsed;
-//     try {
-//       parsed = JSON.parse(aiResponseText);
-//       console.log("Raw AI flashcards response:", parsed);
-//     } catch (err) {
-//       parsed = { flashcards: [], mcqs: [], raw: aiResponseText }; // fallback
-//     }
-
-//     let flashcardDoc = await Flashcard.findOne({ user: userId, note: noteId });
-
-//     if (!flashcardDoc) {
-//       flashcardDoc = new Flashcard({
-//         user: userId,
-//         note: noteId,
-//         type: "flashcard",
-//         data: parsed,
-//       });
-//     } else {
-//       flashcardDoc.data = parsed;
-//     }
-
-//     await flashcardDoc.save();
-
-//     res.json({ flashcards: parsed.flashcards, mcqs: parsed.mcqs });
-//   } catch (err) {
-//     res
-//       .status(500)
-//       .json({ error: "Flashcard generation failed", details: err.message });
-//   }
-// };
-
-
 export const generateFlashcardsMCQs = async (req, res) => {
   try {
     const { noteId } = req.body;
@@ -172,12 +121,12 @@ ${note.summary}
     const response = await result.response;
     const aiResponseText = await response.text();
 
-    console.log("Raw AI flashcards response:", aiResponseText);
+    // console.log("Raw AI flashcards response:", aiResponseText);
 
     // Helper function to extract JSON substring
     function extractJSON(text) {
-      const firstBrace = text.indexOf('{');
-      const lastBrace = text.lastIndexOf('}');
+      const firstBrace = text.indexOf("{");
+      const lastBrace = text.lastIndexOf("}");
       if (firstBrace === -1 || lastBrace === -1) return null;
       const jsonString = text.substring(firstBrace, lastBrace + 1);
       try {
@@ -208,8 +157,14 @@ ${note.summary}
 
     await flashcardDoc.save();
 
-    res.json({ flashcards: parsed.flashcards || [], mcqs: parsed.mcqs || [], raw: parsed.raw || null });
+    res.json({
+      flashcards: parsed.flashcards || [],
+      mcqs: parsed.mcqs || [],
+      raw: parsed.raw || null,
+    });
   } catch (err) {
-    res.status(500).json({ error: "Flashcard generation failed", details: err.message });
+    res
+      .status(500)
+      .json({ error: "Flashcard generation failed", details: err.message });
   }
 };
