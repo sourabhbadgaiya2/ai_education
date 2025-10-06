@@ -5,6 +5,7 @@ import ErrorHandler from "./middlewares/error.middleware.js";
 import cookieParser from "cookie-parser";
 
 import cors from "cors";
+import config from "./config/env.config.js";
 
 const app = express();
 
@@ -12,7 +13,7 @@ const app = express();
 app.use(express.json());
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: config.FRONTEND_URL,
     credentials: true,
   })
 );
