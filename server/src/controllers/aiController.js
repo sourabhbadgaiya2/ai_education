@@ -10,7 +10,8 @@ import ChatSession from "../models/ChatSession.js";
 import Flashcard from "../models/Flashcard.js";
 
 import { GoogleGenerativeAI } from "@google/generative-ai";
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+import config from "../config/env.config.js";
+const genAI = new GoogleGenerativeAI(config.GEMINI_API_KEY);
 
 export const summarizeNote = async (req, res) => {
   try {
