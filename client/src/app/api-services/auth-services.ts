@@ -1,5 +1,5 @@
 const Api = process.env.NEXT_PUBLIC_API_URL;
-console.log("API URL:", Api); // Debugging line to check the API URL
+// console.log("API URL:", Api); // Debugging line to check the API URL
 
 export const registerUser = async (userData: {
   name: string;
