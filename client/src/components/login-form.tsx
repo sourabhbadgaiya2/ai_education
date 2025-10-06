@@ -53,15 +53,29 @@ export function LoginForm({
           description: response.message || "Invalid credentials",
         });
         return;
+      } else {
+        toast({
+          title: "Login successful!",
+          description: "Redirecting to dashboard...",
+        });
+
+        const token = response.data.accessToken;
+
+        if (token) {
+          // Frontend API route ko call karo to set frontend cookie
+          await fetch("/api/set-token", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ token }),
+            credentials: "include", // yeh zaruri hai cookie ke liye
+          });
+        }
+
+        await dispatch(fetchCurrentUser());
+        router.push("/dashboard");
       }
-
-      toast({
-        title: "Login successful!",
-        description: "Redirecting to dashboard...",
-      });
-
-      await dispatch(fetchCurrentUser());
-      router.push("/dashboard");
     } catch (error: any) {
       toast({
         variant: "destructive",
