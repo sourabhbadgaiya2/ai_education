@@ -1,3 +1,4 @@
+import config from "../config/env.config.js";
 import * as authService from "../services/auth.services.js";
 
 export const Register = async (req, res, next) => {
@@ -25,8 +26,8 @@ export const Login = async (req, res, next) => {
       .status(200)
       .cookie("token", accessToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
+        secure: config.NODE_ENV === "production",
+        sameSite: "none",
         maxAge: 24 * 60 * 60 * 1000,
       })
       .json({
