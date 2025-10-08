@@ -1,5 +1,5 @@
 export interface Note {
-  id: string;
+  _id: string;
   title: string;
   uploadedAt: string; // ISO
   lastActivityAt: string; // ISO
