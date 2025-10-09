@@ -3,8 +3,13 @@
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { useState } from "react";
+import { Loader2 } from "lucide-react";
 
-export default function Chat({ note }: { note: { title: string } }) {
+export default function Chat({
+  note,
+}: {
+  note: { title: string; _id: string };
+}) {
   const [messages, setMessages] = useState<
     { role: "user" | "ai"; content: string }[]
   >([
@@ -15,40 +20,55 @@ export default function Chat({ note }: { note: { title: string } }) {
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [sessionId, setSessionId] = useState<string | null>(null);
 
   const ask = async () => {
     const q = input.trim();
     if (!q) return;
+
+    // Show the user’s message instantly
     setMessages((m) => [...m, { role: "user", content: q }]);
     setInput("");
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 800));
-    const answer =
-      `Based on ${note.title}, here's a helpful explanation: ` +
-      "Focus on the definitions, then review the worked examples. Practice by summarizing each section in your own words.";
 
-    let i = 0;
-    const interval = setInterval(() => {
-      setMessages((m) => {
-        const last = m[m.length - 1];
-        if (last?.role === "ai" && last.content.endsWith("…")) {
-          return [
-            ...m.slice(0, -1),
-            { role: "ai", content: last.content + answer[i++] },
-          ];
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/ai/chat`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({
+            noteId: note._id,
+            question: q,
+            sessionId: sessionId || undefined, // only send if exists
+          }),
         }
-        return [...m, { role: "ai", content: "…" }];
-      });
-      if (i >= answer.length) {
-        clearInterval(interval);
-        setLoading(false);
-      }
-    }, 16);
+      );
+
+      if (!res.ok) throw new Error("Failed to get response");
+      const data = await res.json();
+
+      // ✅ Store session ID (for continuing the same chat later)
+      if (data.sessionId && !sessionId) setSessionId(data.sessionId);
+
+      // ✅ Append AI response
+      setMessages((m) => [...m, { role: "ai", content: data.answer }]);
+    } catch (err) {
+      console.error("Chat error:", err);
+      setMessages((m) => [
+        ...m,
+        { role: "ai", content: "Sorry, I couldn’t get that answer." },
+      ]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className='flex flex-col gap-3'>
-      <div className='max-h-80 overflow-auto rounded-md border bg-muted/20 p-3'>
+      <div className='relative max-h-80 overflow-auto rounded-md border bg-muted/20 p-3'>
+        {/* Messages */}
         {messages.map((m, idx) => (
           <div
             key={idx}
@@ -65,22 +85,25 @@ export default function Chat({ note }: { note: { title: string } }) {
             </span>
           </div>
         ))}
+
+        {/* Lucide Loader Overlay */}
         {loading && (
-          <div className='mt-2 flex items-center gap-1'>
-            <span className='size-2 animate-pulse rounded-full bg-blue-600' />
-            <span className='size-2 animate-pulse rounded-full bg-blue-600 [animation-delay:120ms]' />
-            <span className='size-2 animate-pulse rounded-full bg-blue-600 [animation-delay:240ms]' />
+          <div className='absolute inset-0 flex items-center justify-center bg-white/70 backdrop-blur-sm'>
+            <Loader2 className='h-6 w-6 animate-spin text-blue-600' />
           </div>
         )}
       </div>
+
       <div className='flex items-center gap-2'>
         <Input
           placeholder='Ask a question about your note…'
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && ask()}
+          disabled={loading}
         />
         <Button onClick={ask} disabled={loading || input.trim().length === 0}>
+          {loading ? <Loader2 className='h-4 w-4 animate-spin mr-2' /> : null}
           Ask
         </Button>
       </div>

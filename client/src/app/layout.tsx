@@ -35,7 +35,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Providers>
-          <div className='min-h-dvh bg-gradient-to-b from-blue-50 to-white text-foreground'>
+          <div className='relative min-h-dvh bg-gradient-to-b from-blue-50 to-white text-foreground'>
             <Header />
             <main className='px-6 py-8 md:py-12'>{children}</main>
             <Footer />

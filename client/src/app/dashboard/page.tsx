@@ -54,13 +54,16 @@ const DashboardPage: React.FC = () => {
     try {
       setLoading(true);
 
-      const res = await fetch("http://localhost:5000/api/v1/notes", {
-        method: "GET",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/notes`,
+        {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (!res.ok) throw new Error(`Failed to fetch notes: ${res.status}`);
 
@@ -80,10 +83,14 @@ const DashboardPage: React.FC = () => {
         const formData = new FormData();
         formData.append("file", file);
 
-        const res = await fetch("/api/upload", {
-          method: "POST",
-          body: formData,
-        });
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/v1/notes/upload`,
+          {
+            method: "POST",
+            body: formData,
+            credentials: "include",
+          }
+        );
 
         if (!res.ok) throw new Error("Upload failed");
         await fetchNotes();
@@ -100,7 +107,16 @@ const DashboardPage: React.FC = () => {
     async (id: string) => {
       try {
         setLoading(true);
-        const res = await fetch(`/api/notes/${id}/summary`, { method: "POST" });
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/v1/ai/summary`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ noteId: id }),
+            credentials: "include",
+          }
+        );
+
         if (!res.ok) throw new Error("Failed to generate summary");
         await fetchNotes();
       } catch (err) {
@@ -206,11 +222,12 @@ const DashboardPage: React.FC = () => {
 
       {/* Notes */}
       {view === "grid" ? (
-        <div className='mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-3'>
-          {loading &&
-            [0, 1, 2, 3].map((i) => (
-              <Skeleton key={i} className='h-48 rounded-lg' />
-            ))}
+        <div className='relative  mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-3'>
+          {loading && (
+            <div className='absolute inset-0 z-10 flex items-center justify-center bg-white/60 backdrop-blur-sm'>
+              <Loader2 className='h-10 w-10 animate-spin text-gray-700' />
+            </div>
+          )}
           {filtered.map((note: any) => (
             <NoteCard
               key={note._id}

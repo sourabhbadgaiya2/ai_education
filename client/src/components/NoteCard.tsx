@@ -45,7 +45,7 @@ export default function NoteCard({
           )}
         </div>
         <CardDescription>
-          Uploaded {new Date(note.uploadedAt).toLocaleString()} • Last activity{" "}
+          Uploaded {new Date(note.createdAt).toLocaleString()} • Last activity{" "}
           {new Date(note.lastActivityAt).toLocaleString()}
         </CardDescription>
       </CardHeader>
