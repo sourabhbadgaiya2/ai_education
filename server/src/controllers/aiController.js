@@ -95,6 +95,41 @@ Answer:
   }
 };
 
+export const getChatHistory = async (req, res) => {
+  try {
+    const { noteId } = req.query;
+    const userId = req.user.id;
+
+    if (!noteId) {
+      return res.status(400).json({ error: "noteId is required" });
+    }
+
+    // Find chat session for this user + note
+    const session = await ChatSession.findOne({
+      user: userId,
+      note: noteId,
+    });
+
+    if (!session) {
+      return res.json({
+        sessionId: null,
+        messages: [],
+      });
+    }
+
+    res.json({
+      sessionId: session._id,
+      messages: session.messages,
+    });
+  } catch (err) {
+    console.error("Error fetching chat history:", err);
+    res.status(500).json({
+      error: "Failed to fetch chat history",
+      details: err.message,
+    });
+  }
+};
+
 export const generateFlashcardsMCQs = async (req, res) => {
   try {
     const { noteId } = req.body;

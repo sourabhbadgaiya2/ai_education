@@ -17,8 +17,7 @@ export default function NoteDialogs({
   onOpen: (n: Note) => void;
   activeNote: Note | null;
 }) {
-  console.log(note, "note in NoteDialogs");
-  console.log(activeNote, "activeNote in NoteDialogs");
+
 
   return (
     <>

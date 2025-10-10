@@ -7,4 +7,5 @@ export interface Note {
   summary?: string;
   flashcards?: { front: string; back: string }[];
   mcqs?: { question: string; options: string[]; correct_answer: string }[];
+  pdfUrl?: string; // URL to the PDF file
 }

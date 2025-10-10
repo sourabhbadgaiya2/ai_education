@@ -264,6 +264,17 @@ const DashboardPage: React.FC = () => {
                     {note.summary}
                   </p>
                 )}
+
+                {note.pdfUrl && (
+                  <a
+                    href={note.pdfUrl}
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    className='mt-1 block truncate text-xs text-blue-600 hover:underline'
+                  >
+                    {note.pdfUrl}
+                  </a>
+                )}
               </div>
               <div className='text-sm text-muted-foreground'>
                 {new Date(note.uploadedAt).toLocaleString()}
