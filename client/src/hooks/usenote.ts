@@ -5,7 +5,7 @@ export interface Note {
   createdAt: string; // ISO
   lastActivityAt: string; // ISO
   summary?: string;
-  flashcards?: { front: string; back: string }[];
+  flashcards?: { question: string; answer: string }[];
   mcqs?: { question: string; options: string[]; correct_answer: string }[];
   pdfUrl?: string; // URL to the PDF file
 }

@@ -203,3 +203,38 @@ ${note.summary}
       .json({ error: "Flashcard generation failed", details: err.message });
   }
 };
+
+export const getFlashcards = async (req, res) => {
+  try {
+    const { noteId } = req.query;
+    const userId = req.user.id;
+
+    if (!noteId) {
+      return res.status(400).json({ error: "noteId is required" });
+    }
+
+    // User aur note ke basis par flashcard dhoondhna
+    const flashcardDoc = await Flashcard.findOne({
+      user: userId,
+      note: noteId,
+    });
+
+    if (!flashcardDoc) {
+      return res
+        .status(404)
+        .json({ error: "No flashcards found for this note" });
+    }
+
+    res.json({
+      flashcards: flashcardDoc.data.flashcards || [],
+      mcqs: flashcardDoc.data.mcqs || [],
+      raw: flashcardDoc.data.raw || null,
+    });
+  } catch (err) {
+    console.error("Error fetching flashcards:", err);
+    res.status(500).json({
+      error: "Failed to fetch flashcards",
+      details: err.message,
+    });
+  }
+};

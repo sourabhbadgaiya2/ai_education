@@ -8,5 +8,3 @@ export const getUserNotes = async (req, res) => {
     next(err);
   }
 };
-
-// !------------------------------------------

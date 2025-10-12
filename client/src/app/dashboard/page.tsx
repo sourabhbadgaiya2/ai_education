@@ -33,12 +33,17 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  fetchNotesService,
+  generateSummaryService,
+  uploadNoteService,
+} from "../api-services/noteService";
 
 const DashboardPage: React.FC = () => {
   const fileRef = useRef<HTMLInputElement | null>(null);
   const [activeNote, setActiveNote] = useState<Note | null>(null);
   const [query, setQuery] = useState("");
-  const [sortBy, setSortBy] = useState<"last" | "upload" | "title">("last");
+  const [sortBy, setSortBy] = useState<"last" | "upload" | "title">("upload");
   const [view, setView] = useState<"grid" | "list">("grid");
   const [loading, setLoading] = useState(false);
   const [notes, setNotes] = useState<Note[]>([]);
@@ -54,20 +59,7 @@ const DashboardPage: React.FC = () => {
     try {
       setLoading(true);
 
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/notes`,
-        {
-          method: "GET",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (!res.ok) throw new Error(`Failed to fetch notes: ${res.status}`);
-
-      const data: NotesResponse = await res.json();
+      const data = await fetchNotesService();
       setNotes(data.notes);
     } catch (err) {
       console.error("Error fetching notes:", err);
@@ -83,16 +75,7 @@ const DashboardPage: React.FC = () => {
         const formData = new FormData();
         formData.append("file", file);
 
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/v1/notes/upload`,
-          {
-            method: "POST",
-            body: formData,
-            credentials: "include",
-          }
-        );
-
-        if (!res.ok) throw new Error("Upload failed");
+        await uploadNoteService(file);
         await fetchNotes();
       } catch (err) {
         console.error("Error uploading file:", err);
@@ -107,17 +90,9 @@ const DashboardPage: React.FC = () => {
     async (id: string) => {
       try {
         setLoading(true);
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/v1/ai/summary`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ noteId: id }),
-            credentials: "include",
-          }
-        );
 
-        if (!res.ok) throw new Error("Failed to generate summary");
+        await generateSummaryService(id);
+
         await fetchNotes();
       } catch (err) {
         console.error("Error generating summary:", err);
@@ -189,14 +164,13 @@ const DashboardPage: React.FC = () => {
         <div className='flex items-center gap-2'>
           <Select
             value={sortBy}
-            onValueChange={(v: "last" | "upload" | "title") => setSortBy(v)}
+            onValueChange={(v: "upload" | "title") => setSortBy(v)}
           >
             <SelectTrigger className='w-40'>
               <ArrowUpDown className='mr-2 h-4 w-4 opacity-60' />
               <SelectValue placeholder='Sort by' />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value='last'>Last activity</SelectItem>
               <SelectItem value='upload'>Upload date</SelectItem>
               <SelectItem value='title'>Title</SelectItem>
             </SelectContent>

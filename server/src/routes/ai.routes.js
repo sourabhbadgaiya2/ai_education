@@ -3,6 +3,7 @@ import {
   chatQnA,
   generateFlashcardsMCQs,
   getChatHistory,
+  getFlashcards,
   summarizeNote,
 } from "../controllers/aiController.js";
 import { authenticate } from "../middlewares/auth.middleware.js";
@@ -16,5 +17,7 @@ router.post("/chat", authenticate, chatQnA);
 router.get("/chat/history", authenticate, getChatHistory);
 
 router.post("/flashcards", authenticate, generateFlashcardsMCQs);
+
+router.get("/flashcards", authenticate, getFlashcards);
 
 export default router;
