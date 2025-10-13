@@ -1,86 +1,4 @@
-// "use client";
 
-// import { Button } from "@/components/ui/button";
-// import {
-//   Card,
-//   CardContent,
-//   CardDescription,
-//   CardHeader,
-//   CardTitle,
-// } from "@/components/ui/card";
-// import { Input } from "@/components/ui/input";
-// import { useSearchParams, useRouter } from "next/navigation";
-// import { useMemo, useState } from "react";
-
-// export default function ResetPassword() {
-//   const searchParams = useSearchParams();
-//   const router = useRouter();
-
-//   const email = useMemo(() => searchParams.get("email") || "", [searchParams]);
-//   const token = useMemo(() => searchParams.get("token") || "", [searchParams]);
-
-//   const [p1, setP1] = useState("");
-//   const [p2, setP2] = useState("");
-//   const [loading, setLoading] = useState(false);
-//   const [error, setError] = useState<string | null>(null);
-
-//   const submit = async () => {
-//     setLoading(true);
-//     setError(null);
-//     try {
-//       const res = await fetch("/api/auth/reset", {
-//         method: "POST",
-//         headers: { "Content-Type": "application/json" },
-//         body: JSON.stringify({ email, token, password: p1, confirm: p2 }),
-//       });
-//       const data = await res.json();
-//       if (!res.ok) throw new Error(data?.error || "Reset failed");
-//       router.push("/"); // Next.js me navigation
-//     } catch (e: any) {
-//       setError(e?.message || "Failed");
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   const valid = p1.length >= 8 && p1 === p2;
-
-//   return (
-//     <section className='max-w-md mx-auto'>
-//       <Card>
-//         <CardHeader>
-//           <CardTitle>Reset Password</CardTitle>
-//           <CardDescription>
-//             Enter and confirm your new password.
-//           </CardDescription>
-//         </CardHeader>
-//         <CardContent className='space-y-3'>
-//           <Input placeholder='Email' value={email} readOnly />
-//           <Input
-//             type='password'
-//             placeholder='New password (min 8 chars)'
-//             value={p1}
-//             onChange={(e) => setP1(e.target.value)}
-//           />
-//           <Input
-//             type='password'
-//             placeholder='Confirm new password'
-//             value={p2}
-//             onChange={(e) => setP2(e.target.value)}
-//           />
-//           {error && <p className='text-sm text-destructive'>{error}</p>}
-//           <Button
-//             className='w-full'
-//             disabled={loading || !valid}
-//             onClick={submit}
-//           >
-//             Reset Password
-//           </Button>
-//         </CardContent>
-//       </Card>
-//     </section>
-//   );
-// }
 
 "use client";
 
@@ -95,15 +13,15 @@ import {
 import { FieldDescription } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import {  useState } from "react";
 
 export default function ResetPassword() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const email = useMemo(() => searchParams.get("email") || "", [searchParams]);
+   const email = searchParams.get('email') || '';
 
-  const [otp, setOtp] = useState(""); // OTP field
+  const [otp, setOtp] = useState(""); 
   const [p1, setP1] = useState("");
   const [p2, setP2] = useState("");
   const [loading, setLoading] = useState(false);
