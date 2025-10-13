@@ -1,6 +1,6 @@
-
-
 "use client";
+
+export const dynamic = "force-dynamic";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -13,15 +13,15 @@ import {
 import { FieldDescription } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { useSearchParams, useRouter } from "next/navigation";
-import {  useState } from "react";
+import { useState } from "react";
 
-export default function ResetPassword() {
+export default function VerifyOtpPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-   const email = searchParams.get('email') || '';
+  const email = searchParams.get("email") || "";
 
-  const [otp, setOtp] = useState(""); 
+  const [otp, setOtp] = useState("");
   const [p1, setP1] = useState("");
   const [p2, setP2] = useState("");
   const [loading, setLoading] = useState(false);
