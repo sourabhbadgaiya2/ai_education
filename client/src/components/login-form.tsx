@@ -22,6 +22,7 @@ import { useToast } from "@/hooks/use-toast";
 import { loginUser } from "@/app/api-services/auth-services";
 import { useAppDispatch } from "@/app/store/hooks";
 import { fetchCurrentUser } from "@/app/store/features/authSlice";
+import Link from "next/link";
 
 export function LoginForm({
   className,
@@ -62,14 +63,13 @@ export function LoginForm({
         const token = response.data.accessToken;
 
         if (token) {
-          // Frontend API route ko call karo to set frontend cookie
           await fetch("/api/set-token", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({ token }),
-            credentials: "include", // yeh zaruri hai cookie ke liye
+            credentials: "include",
           });
         }
 
@@ -116,12 +116,12 @@ export function LoginForm({
               <Field>
                 <div className='flex items-center'>
                   <FieldLabel htmlFor='password'>Password</FieldLabel>
-                  <a
-                    href='#'
+                  <Link
+                    href='/forgot-password'
                     className='ml-auto inline-block text-sm underline-offset-4 hover:underline'
                   >
                     Forgot your password?
-                  </a>
+                  </Link>
                 </div>
                 <Input
                   id='password'
@@ -134,7 +134,11 @@ export function LoginForm({
               </Field>
 
               <Field>
-                <Button type='submit' disabled={loading}>
+                <Button
+                  className={"bg-blue-600 hover:bg-blue-500"}
+                  type='submit'
+                  disabled={loading}
+                >
                   {loading ? "Logging in..." : "Login"}
                 </Button>
                 <Button variant='outline' type='button'>

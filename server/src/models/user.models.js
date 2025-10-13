@@ -33,6 +33,8 @@ const userSchema = new mongoose.Schema(
       enum: ["user", "admin"],
       default: "user",
     },
+    resetPasswordToken: String,
+    resetPasswordExpires: Date,
   },
   { timestamps: true }
 );
@@ -53,6 +55,15 @@ userSchema.methods.generateAuthToken = async function () {
   });
 
   return accessToken;
+};
+
+userSchema.methods.generatePasswordResetToken = function () {
+  const resetToken = jwt.sign({ _id: this._id }, config.JWT_SECRET, {
+    expiresIn: "1h",
+  });
+  this.resetPasswordToken = resetToken;
+  this.resetPasswordExpires = Date.now() + 3600000;
+  return resetToken;
 };
 
 const User = mongoose.model("User", userSchema);

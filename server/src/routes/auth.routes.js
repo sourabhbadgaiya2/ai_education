@@ -12,4 +12,8 @@ router.get("/me", authenticate, authCtrl.getCurrentUser);
 
 router.post("/logout", authenticate, authCtrl.Logout);
 
+router.post("/forget-password", authCtrl.forgetPasswordController);
+
+router.post("/verify-otp", authCtrl.verifyOTPController);
+
 export default router;

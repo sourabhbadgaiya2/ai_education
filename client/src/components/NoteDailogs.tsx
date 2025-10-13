@@ -122,13 +122,7 @@ export default function NoteDialogs({
     try {
       setLoading(true);
 
-      // const res = await fetch(
-      //   `${process.env.NEXT_PUBLIC_API_URL}/api/v1/ai/flashcards?noteId=${note._id}`,
-      //   {
-      //     method: "GET",
-      //     credentials: "include",
-      //   }
-      // );
+   
       const res = await getFlashcards(note._id);
 
       if (res.status === 404) {
@@ -151,17 +145,6 @@ export default function NoteDialogs({
     try {
       setLoading(true);
       const res = await generateFlashcards(note._id);
-      // const res = await fetch(
-      //   `${process.env.NEXT_PUBLIC_API_URL}/api/v1/ai/flashcards`,
-      //   {
-      //     method: "POST",
-      //     headers: {
-      //       "Content-Type": "application/json",
-      //     },
-      //     credentials: "include",
-      //     body: JSON.stringify({ noteId: note._id }),
-      //   }
-      // );
 
       if (res.ok) {
         const data = await res.json();

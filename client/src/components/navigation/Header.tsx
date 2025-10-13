@@ -36,11 +36,9 @@ export default function Header() {
 
   const onLogout = async () => {
     try {
-      // 1️⃣ Redux ya state se logout
       await dispatch(logout());
       await logoutUser();
 
-      // 2️⃣ Backend API ko call karke token clear karna
       const res = await fetch("/api/clear-token", {
         method: "POST",
         headers: {
@@ -49,10 +47,8 @@ export default function Header() {
         credentials: "include",
       });
 
-      const data = await res.json();
-      // console.log(data.message); // "Token cleared"
+      await res.json();
 
-      // 3️⃣ Page refresh (ya UI update)
       router.refresh();
     } catch (error) {
       console.error("Logout failed:", error);
@@ -69,24 +65,8 @@ export default function Header() {
           <span>AI StudyMate</span>
         </Link>
         <nav className='flex items-center gap-2'>
-          <Link
-            href='/review'
-            className={cn(
-              "text-sm font-medium px-3 py-2 rounded-md hover:bg-blue-50"
-            )}
-          >
-            Review
-          </Link>
           {user ? (
             <>
-              <Link
-                href='/dashboard'
-                className={cn(
-                  "text-sm font-medium px-3 py-2 rounded-md hover:bg-blue-50"
-                )}
-              >
-                Dashboard
-              </Link>
               <Button variant='outline' onClick={onLogout}>
                 Logout
               </Button>
@@ -99,7 +79,6 @@ export default function Header() {
               >
                 Login
               </a>
-              {/* <ModeToggle /> */}
             </>
           )}
         </nav>

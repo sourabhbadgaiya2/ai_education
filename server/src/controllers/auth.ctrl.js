@@ -76,3 +76,25 @@ export const Logout = async (req, res, next) => {
     next(error);
   }
 };
+
+export const forgetPasswordController = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    await authService.generateForgetPasswordOTP(email);
+    res.json({ message: "OTP sent to your email ✅" });
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+};
+
+export const verifyOTPController = async (req, res, next) => {
+  try {
+    const { email, otp, newPassword } = req.body;
+    await authService.verifyOTPAndResetPassword(email, otp, newPassword);
+    res.json({ message: "Password reset successfully ✅" });
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+};

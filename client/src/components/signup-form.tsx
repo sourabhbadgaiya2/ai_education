@@ -55,7 +55,6 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
         password: formData.password,
       });
 
-      // Check if backend returned success === false
       if (response.success === false) {
         toast({
           variant: "destructive",
@@ -66,7 +65,6 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
         return;
       }
 
-      // If success
       toast({
         title: "Account created successfully!",
         description: "You can now log in with your new account.",
@@ -143,23 +141,13 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
               </FieldDescription>
             </Field>
 
-            {/* <Field>
-              <FieldLabel htmlFor='confirmPassword'>
-                Confirm Password
-              </FieldLabel>
-              <Input
-                id='confirmPassword'
-                type='password'
-                required
-                value={formData.confirmPassword}
-                onChange={handleChange}
-              />
-              <FieldDescription>Please confirm your password.</FieldDescription>
-            </Field> */}
-
             <FieldGroup>
               <Field>
-                <Button type='submit' disabled={loading}>
+                <Button
+                  className={"bg-blue-600 hover:bg-blue-500"}
+                  type='submit'
+                  disabled={loading}
+                >
                   {loading ? "Creating..." : "Create Account"}
                 </Button>
                 <Button variant='outline' type='button'>

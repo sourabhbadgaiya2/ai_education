@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Note } from "@/hooks/usenote";
 import {
   ArrowUpDown,
-  Badge,
   Grid2X2,
   List,
   Loader2,
@@ -38,6 +37,7 @@ import {
   generateSummaryService,
   uploadNoteService,
 } from "../api-services/noteService";
+import { Badge } from "@/components/ui/badge";
 
 const DashboardPage: React.FC = () => {
   const fileRef = useRef<HTMLInputElement | null>(null);
@@ -144,7 +144,11 @@ const DashboardPage: React.FC = () => {
               if (fileRef.current) fileRef.current.value = "";
             }}
           />
-          <Button onClick={() => fileRef.current?.click()} disabled={loading}>
+          <Button
+            className={"bg-blue-600 hover:bg-blue-500"}
+            onClick={() => fileRef.current?.click()}
+            disabled={loading}
+          >
             <Upload className='mr-2 h-4 w-4' /> Upload PDF
           </Button>
         </div>
@@ -216,10 +220,10 @@ const DashboardPage: React.FC = () => {
           <div className='hidden md:grid grid-cols-[1fr_220px_160px_280px] items-center gap-4 border-b bg-muted/40 px-4 py-2 text-xs font-medium text-muted-foreground'>
             <div>Title</div>
             <div>Uploaded</div>
-            <div>Activity</div>
+
             <div>Actions</div>
           </div>
-          {filtered.map((note) => (
+          {filtered.map((note: any) => (
             <div
               key={note._id}
               className='grid grid-cols-1 md:grid-cols-[1fr_220px_160px_280px] items-center gap-4 px-4 py-3 border-b last:border-0'
@@ -228,9 +232,13 @@ const DashboardPage: React.FC = () => {
                 <div className='flex items-center gap-2'>
                   <p className='truncate font-medium'>{note.title}</p>
                   {note.summary ? (
-                    <Badge>Summarized</Badge>
+                    <Badge variant='secondary' className='whitespace-nowrap'>
+                      Summarized
+                    </Badge>
                   ) : (
-                    <Badge>New</Badge>
+                    <Badge variant='outline' className='whitespace-nowrap'>
+                      New
+                    </Badge>
                   )}
                 </div>
                 {note.summary && (
@@ -251,12 +259,10 @@ const DashboardPage: React.FC = () => {
                 )}
               </div>
               <div className='text-sm text-muted-foreground'>
-                {new Date(note.uploadedAt).toLocaleString()}
+                {new Date(note.createdAt).toLocaleString()}
               </div>
-              <div className='text-sm text-muted-foreground'>
-                {new Date(note.lastActivityAt).toLocaleString()}
-              </div>
-              <div className='flex flex-wrap items-center gap-2'>
+
+              <div className='flex  items-center gap-2'>
                 <Button
                   variant='outline'
                   size='sm'

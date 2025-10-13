@@ -6,6 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -20,11 +21,8 @@ export default function Home() {
             and review with flashcards & MCQs. Stay focused and study smarter.
           </p>
           <div className='mt-6 flex gap-3'>
-            <Button
-              size='lg'
-              // onClick={() => }
-            >
-              Get started
+            <Button className={"bg-blue-600 hover:bg-blue-500"} size='lg'>
+              <Link href='/dashboard'>Get Started</Link>
             </Button>
           </div>
         </div>

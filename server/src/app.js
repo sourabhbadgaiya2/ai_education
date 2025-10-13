@@ -9,14 +9,33 @@ import config from "./config/env.config.js";
 
 const app = express();
 
+const allowedOrigins = [
+  config.FRONTEND_URL,
+  "https://mail-send-weld.vercel.app",
+];
+
 // middlewares
 app.use(express.json());
+
 app.use(
   cors({
-    origin: config.FRONTEND_URL,
+    origin: function (origin, callback) {
+      if (!origin) return callback(null, true); // Postman ya server requests ke liye
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   })
 );
+// app.use(
+//   cors({
+//     origin: config.FRONTEND_URL,
+//     credentials: true,
+//   })
+// );
 app.use(express.urlencoded({ extended: true }));
 
 app.use(morgan("dev"));
