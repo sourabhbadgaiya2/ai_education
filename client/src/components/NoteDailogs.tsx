@@ -122,10 +122,9 @@ export default function NoteDialogs({
     try {
       setLoading(true);
 
-   
       const res = await getFlashcards(note._id);
 
-      if (res.status === 404) {
+      if (res.status === 404 || res.status === 500) {
         await handleGenerate();
       } else if (res.ok) {
         const data = await res.json();
